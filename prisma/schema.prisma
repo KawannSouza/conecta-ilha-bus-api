@@ -24,4 +24,24 @@ model Linha {
   origin      String
   destination String
   route       String[]
+  feedbacks   Feedback[]
+}
+
+model Feedback {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  username       String
+  lineName       String
+  frequencia     Int
+  pontualidade   Int
+  lotacao        Int
+  conservacao    Int
+  educacao       Int
+  acessibilidade Int
+  sinalizacao    Int
+  preparo        Int
+  ambiente       Int
+  comentario     String
+  linhaId        String   @db.ObjectId
+  linha          Linha    @relation(fields: [linhaId], references: [id])
+  createdAt      DateTime @default(now())
 }

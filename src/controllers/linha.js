@@ -25,3 +25,53 @@ export const getLineByCode = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const feedbackLine = async (req, res) => {
+    const { id: linhaId } = req.params;
+
+    const { 
+        username,
+        lineName,
+        frequencia,
+        pontualidade,
+        lotacao,
+        conservacao,
+        educacao,
+        acessibilidade,
+        sinalizacao,
+        preparo,
+        ambiente,
+        comentario,
+    } = req.body;
+
+    const feedback = await prisma.feedback.create({
+        data: {
+            username,
+            lineName,
+            frequencia,
+            pontualidade,
+            lotacao,
+            conservacao,
+            educacao,
+            acessibilidade,
+            sinalizacao,
+            preparo,
+            ambiente,
+            comentario,
+            linha: {
+                connect: { id: linhaId }
+            }
+        }
+    })
+
+    res.status(201).json({ message: "feedback created", feedback });
+}
+
+export const getFeedbacks = async (req, res) => {
+    try {
+        const feedbacks = await prisma.feedback.findMany();
+        res.status(200).json(feedbacks);
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error"})
+    }
+}

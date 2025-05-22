@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
         }
         const emailExists = await prisma.user.findUnique({ where: { email }});
         if (emailExists) {
-            res.status(400).json({ message: "Email already exists" });
+            return res.status(400).json({ message: "Email already exists" });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -58,10 +58,11 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: "Invalid credentials" });
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
+        const token = jwt.sign({ id: user.id, nome: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "12h" });
 
-        res.status(200).json({ message: "Login successful", token });
+        res.status(200).json({ message: "Login successful", token, user: user.name });
     } catch (error) {
+        console.log(error);
         res.status(500).json({ message: "Internal server error" });
     }
 }
